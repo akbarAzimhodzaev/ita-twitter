@@ -52,6 +52,8 @@
         </div>
       </div>
 
+      <button id="start-filter" class="btn btn-danger">Spam Filter!</button>
+
       <div class="row" id="messages"></div>
     </div>
 
@@ -67,7 +69,12 @@
     ></script>
 
     <script>
+      let messages = [];
+
+      //  замыкание для добавления элемента в список
+      //  принимает HTMLElement, в который будет добавляться элемент
       let addItem = (listElement) => {
+        // функция для добавления
         return function (title, content, ...tags) {
           let $message = document.createElement("div");
           $message.classList.add("box");
@@ -90,11 +97,20 @@
         };
       };
 
+      // функция для создания объекта сообщения
+      const createMessage = (author, message, ...tags) => {
+        return {
+          author,
+          message,
+          tags,
+        };
+      };
+
+      // добавление сообщения
       const messageForm = document.getElementById("message-form");
       const messagesDiv = document.getElementById("messages");
 
       let addMessage = addItem(messagesDiv);
-      // addMessage('Nina', 'Hi!', '#', '#', '#')
 
       messageForm.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -102,16 +118,42 @@
         const _author = messageForm.querySelector("[name=author]").value;
         const _message = messageForm.querySelector("[name=message]").value;
 
-        if (_author === '' || _message === '') {
-            alert('Заполнены не все поля!');
-            return;
+        if (_author === "" || _message === "") {
+          alert("Заполнены не все поля!");
+          return;
         }
-        
+
         const _tagsInput = messageForm.querySelector("[name=tags]").value;
         let tags = _tagsInput.split(" "); // array
 
+        let newMessage = createMessage(_author, _message, ...tags);
+        messages.push(newMessage);
+
         addMessage(_author, _message, ...tags);
+
+        messageForm.reset();
       });
+
+      document.querySelector("#start-filter").addEventListener("click", () => {
+        messages = messages.filter((item) => {
+          let _tags = item.tags;
+
+          let spamTagsCount = _tags.reduce((acc, tag) => {
+            if (tag == "spam" || tag == "js" || tag == "mat") acc++;
+            return acc;
+          }, 0);
+
+          return spamTagsCount == 0;
+        });
+
+        messagesDiv.innerHTML = "";
+
+        messages.map((item) => {
+          let { author, message: __message, tags } = item;
+          addMessage(author, __message, tags);
+        });
+      });
+      //
     </script>
   </body>
 </html>
