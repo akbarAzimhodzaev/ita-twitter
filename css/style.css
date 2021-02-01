@@ -18,8 +18,30 @@ body {
 #messages {
   margin-top: 20px;
   margin-bottom: 20px;
+  padding-bottom: 60px;
+}
+
+#messages .box {
+  position: relative;
 }
 
 #messages .box + .box {
   margin-top: 20px;
+}
+
+.message__date {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  font-size: 12px;
+}
+
+.app-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  background: #ffffff;
+  z-index: 9;
 }
